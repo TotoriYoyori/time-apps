@@ -6,10 +6,10 @@
   // Adding interactions to Start/Pause button. 
   const toggleButtonLm = document.querySelector ('.js-toggle-watch');
     toggleButtonLm.addEventListener('click', () => {
-      checkMode();
+      toggleOrPause();
     } );
     document.body.addEventListener('keydown', (event) => {
-      event.key === 's' && checkMode();
+      event.key === 's' && toggleOrPause();
     } );
 
   // Adding interactions to Reset button.
@@ -19,52 +19,57 @@
     } );
 
     document.body.addEventListener('keydown', (event) => {
-      event.key === 'r' && toggleTime();
+      event.key === 'r' && resetTime();
     } );
 
   // Declaring variables for time elapse information screen:
-  const time = {
+ let time = JSON.parse( localStorage.getItem('time') ) || {
     hours: 0,
     mins: 0,
     seconds: 0,
     centiseconds: 0
   };
-  let {hours, mins, seconds, centiseconds} = time;
 
   let intervalID;
 
+  renderTime();
 // >>>>>>>>>> FUNCTIONS <<<<<<<<<<<<<<
 
-  // checkMode flips between toggle or pause time depending on if intervalID is running. Toggle also changes appearances through CSS class. 
-  const checkMode = () => (!intervalID)?
+  // toggleOrPause flips between toggle or pause time depending on if intervalID is running. Toggle also changes appearances through CSS class. 
+  const toggleOrPause = () => (!intervalID)?
     toggleTime()
     :pauseTime();
 
   // renderTime displays the watch ticking up in the HTML. 
-  function renderTime() {
-    if (centiseconds > 99) {
-      seconds ++;
-      centiseconds = 0;
-    
-      if (seconds > 59) {
-        mins ++;
-        seconds = 0;
-      
-        if (mins > 59) {
-          hours ++;
-          mins = 0;
-        };
-      };
+  function updateTime() {
+    if (time.centiseconds > 99) {
+      time.seconds++;
+      time.centiseconds = 0;
     };
-    
+  
+    if (time.seconds > 59) {
+      time.mins++;
+      time.seconds = 0;
+    };
+  
+    if (time.mins > 59) {
+      time.hours++;
+      time.mins = 0;
+    };
+  };
+
+  function renderTime() {
+    updateTime();
     timeElapseLm.innerHTML = 
-      `${hours < 10 ? '0' :''}${hours} : ${mins < 10? '0' :''}${mins} : ${seconds < 10? '0' :''}${seconds}.${centiseconds < 10? '0' :''}${centiseconds}`
+      `${time.hours < 10 ? '0' :''}${time.hours} : ${time.mins < 10? '0' :''}${time.mins} : ${time.seconds < 10? '0' :''}${time.seconds}.${time.centiseconds < 10? '0' :''}${time.centiseconds}`
   };
 
   function toggleTime() {
     intervalID = setInterval(() => { 
-      centiseconds ++;
+      time.centiseconds ++;
+      saveToStorage();
       renderTime();
+      console.log(time);
       },
     10);
 
@@ -80,14 +85,25 @@
     toggleButtonLm.classList.remove('pause-watch');
   };
 
+  function saveToStorage() {
+    localStorage.setItem('time', JSON.stringify(time) );
+  };
+
+  function clearStorage() {
+    localStorage.removeItem('time');
+  };
+
   // Reset time pauses time and resets the time to 0. 
   function resetTime() {
     clearInterval(intervalID);
-      intervalID = null;
-    mins = 0;
-    seconds = 0;
+      intervalID = null; 
+    clearStorage();
+      time.hours = 0;
+      time.mins = 0;
+      time.seconds = 0;
+      time.centiseconds = 0;
+    saveToStorage();
     renderTime();
-
     toggleButtonLm.innerHTML = 'Start';
   };
 
