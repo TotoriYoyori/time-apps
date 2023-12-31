@@ -23,9 +23,14 @@
     } );
 
   // Declaring variables for time elapse information screen:
-  let hours = 0;
-  let mins = 0;  
-  let seconds = 0;
+  const time = {
+    hours: 0,
+    mins: 0,
+    seconds: 0,
+    centiseconds: 0
+  };
+  let {hours, mins, seconds, centiseconds} = time;
+
   let intervalID;
 
 // >>>>>>>>>> FUNCTIONS <<<<<<<<<<<<<<
@@ -37,26 +42,31 @@
 
   // renderTime displays the watch ticking up in the HTML. 
   function renderTime() {
-    if (seconds > 59) {
-      mins ++;
-      seconds = 0;
+    if (centiseconds > 99) {
+      seconds ++;
+      centiseconds = 0;
     
-      if (mins > 59) {
-        hours ++;
-        mins = 0;
+      if (seconds > 59) {
+        mins ++;
+        seconds = 0;
+      
+        if (mins > 59) {
+          hours ++;
+          mins = 0;
+        };
       };
     };
-
+    
     timeElapseLm.innerHTML = 
-      `${hours < 10 ? '0' :''}${hours} : ${mins < 10? '0' :''}${mins} : ${seconds < 10? '0' :''}${seconds}`
+      `${hours < 10 ? '0' :''}${hours} : ${mins < 10? '0' :''}${mins} : ${seconds < 10? '0' :''}${seconds}.${centiseconds < 10? '0' :''}${centiseconds}`
   };
 
   function toggleTime() {
     intervalID = setInterval(() => { 
-      seconds ++;
+      centiseconds ++;
       renderTime();
       },
-    1000);
+    10);
 
     toggleButtonLm.innerHTML = 'Pause';
     toggleButtonLm.classList.add('pause-watch');
