@@ -1,0 +1,58 @@
+body {
+  background-color: rgb(10,10,10);
+}
+
+.watch {
+  color: white;
+  font-family: Helvetica;
+  font-size: 150px;
+  text-align: center;
+}
+
+.toggle-watch {
+  cursor: pointer;
+  font-family: Gotham;
+  font-size: 40px;
+  font-weight: lighter;
+  padding: 10px;
+  background-color: green;
+  color: white;
+  border: none;
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  margin-right: 100px;
+}
+
+.reset-watch {
+  cursor: pointer;
+  font-family: Gotham;
+  font-size: 45px;
+  font-weight: lighter;
+  padding: 10px;
+  background-color: maroon;
+  color: white;
+  border: none;
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+}
+
+.pause-watch {
+  cursor: pointer;
+  font-family: Gotham;
+  font-size: 40px;
+  font-weight: lighter;
+  padding: 10px;
+  background-color: orange;
+  color: white;
+  border: none;
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  margin-right: 100px;
+}
+
+.watch-two-buttons {
+  text-align: center;
+}; 
