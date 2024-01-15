@@ -1,9 +1,7 @@
-// >>>>>>>>>> DECLARING VARIABLES AND INTERACTIONS <<<<<<<<<<<<<<
-
   // Declaring variables for time elapsing screen.
   const timeElapseLm = document.querySelector ('.js-watch');
 
-  // Adding interactions to Start/Pause button. 
+  // On click + KB Shortcut for Start/Pause button.
   const toggleButtonLm = document.querySelector ('.js-toggle-watch');
     toggleButtonLm.addEventListener('click', () => {
       toggleOrPause();
@@ -12,7 +10,7 @@
       event.key === 's' && toggleOrPause();
     } );
 
-  // Adding interactions to Reset button.
+  // On click + KB Shortcut for Reset button.
   const resetButtonLm = document.querySelector ('.js-reset-watch');
     resetButtonLm.addEventListener('click', () => {
       resetTime();
@@ -22,7 +20,7 @@
       event.key === 'r' && resetTime();
     } );
 
-  // Declaring variables for time elapse information screen:
+  // Saving a time and units as objects. Render time on the webpage as soon as it loads. 
  let time = JSON.parse( localStorage.getItem('time') ) || {
     hours: 0,
     mins: 0,
@@ -30,17 +28,12 @@
     centiseconds: 0
   };
 
+  renderTime();
+
+  // Save global interval ID for async operations. 
   let intervalID;
 
-  renderTime();
-// >>>>>>>>>> FUNCTIONS <<<<<<<<<<<<<<
-
-  // toggleOrPause flips between toggle or pause time depending on if intervalID is running. Toggle also changes appearances through CSS class. 
-  const toggleOrPause = () => (!intervalID)?
-    toggleTime()
-    :pauseTime();
-
-  // renderTime displays the watch ticking up in the HTML. 
+  // renderTime displays time ticking up in the HTML. updateTime is a callback for unit conversion. 
   function updateTime() {
     if (time.centiseconds > 99) {
       time.seconds++;
@@ -64,6 +57,12 @@
       `${time.hours < 10 ? '0' :''}${time.hours} : ${time.mins < 10? '0' :''}${time.mins} : ${time.seconds < 10? '0' :''}${time.seconds}.${time.centiseconds < 10? '0' :''}${time.centiseconds}`
   };
 
+  // toggleOrPause flips between toggle or pause time depending on if an intervalID is running. Toggle also changes appearances through CSS class. 
+  const toggleOrPause = () => (!intervalID)?
+  toggleTime()
+  :pauseTime();
+
+  // toggleTime updates centiseconds every 10ms, constantly renders the time, and save new time to storage. Upon clicked, also transforms to Pause button. 
   function toggleTime() {
     intervalID = setInterval(() => { 
       time.centiseconds ++;
@@ -84,15 +83,7 @@
     toggleButtonLm.innerHTML = 'Resume';
     toggleButtonLm.classList.remove('pause-watch');
   };
-
-  function saveToStorage() {
-    localStorage.setItem('time', JSON.stringify(time) );
-  };
-
-  function clearStorage() {
-    localStorage.removeItem('time');
-  };
-
+  
   // Reset time pauses time and resets the time to 0. 
   function resetTime() {
     clearInterval(intervalID);
@@ -105,5 +96,16 @@
     saveToStorage();
     renderTime();
     toggleButtonLm.innerHTML = 'Start';
+    toggleButtonLm.classList.remove('pause-watch');
   };
+
+  //localStorage related functions:
+  function saveToStorage() {
+    localStorage.setItem('time', JSON.stringify(time) );
+  };
+
+  function clearStorage() {
+    localStorage.removeItem('time');
+  };
+
 
